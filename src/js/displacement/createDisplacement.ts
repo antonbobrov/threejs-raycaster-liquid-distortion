@@ -45,6 +45,7 @@ export function createDisplacement(
     noiseScale: uniform(defaultSettings.noiseScale),
     noiseSpeed: uniform(defaultSettings.noiseSpeed),
     noiseIntensity: uniform(defaultSettings.noiseIntensity),
+    perPixelNormal: uniform(defaultSettings.perPixelNormal),
   };
 
   const { count, wavesStorage, releaseWave, updateWaves } = createWaves(
@@ -119,17 +120,16 @@ export function createDisplacement(
     return abs(pos.x).greaterThan(abs(pos.z)).select(a, b);
   });
 
-  const positionNode = Fn(() => {
-    const pos = positionLocal;
-
-    const updatedPos = updatePosition(pos);
+  const computeNormal = Fn(([position, normal]: [any, any]) => {
     const theta = float(0.001);
 
-    const vecTangent = orthogonal();
-    const vecBiTangent = normalize(cross(normalLocal, vecTangent));
+    const updatedPos = updatePosition(position);
 
-    const neighbour1 = pos.add(vecTangent.mul(theta));
-    const neighbour2 = pos.add(vecBiTangent.mul(theta));
+    const vecTangent = orthogonal();
+    const vecBiTangent = normalize(cross(normal, vecTangent));
+
+    const neighbour1 = position.add(vecTangent.mul(theta));
+    const neighbour2 = position.add(vecBiTangent.mul(theta));
 
     const displacedNeighbour1 = updatePosition(neighbour1);
     const displacedNeighbour2 = updatePosition(neighbour2);
@@ -137,22 +137,32 @@ export function createDisplacement(
     const displacedTangent = displacedNeighbour1.sub(updatedPos);
     const displacedBitangent = displacedNeighbour2.sub(updatedPos);
 
-    const normal = normalize(cross(displacedTangent, displacedBitangent));
+    const newNormal = normalize(cross(displacedTangent, displacedBitangent));
 
-    const displacedNormal = normal
-      .dot(normalLocal)
+    const displacedNormal = newNormal
+      .dot(normal)
       .lessThan(0.0)
-      .select(normal.negate(), normal);
+      .select(newNormal.negate(), newNormal);
 
+    return displacedNormal;
+  });
+
+  const positionNode = Fn(() => {
+    const pos = positionLocal;
+
+    const updatedPos = updatePosition(pos);
+
+    const displacedNormal = computeNormal(pos, normalLocal);
     vNormal.assign(displacedNormal);
 
     return updatedPos;
   })();
 
   const normalNode = Fn(() => {
-    const normal = vNormal;
+    const perPixel = computeNormal(positionLocal, normalLocal);
+    const selected = select(settings.perPixelNormal, perPixel, vNormal);
 
-    return transformNormalToView(normal);
+    return transformNormalToView(selected);
   })();
 
   const localGUI = createGUI(settings, gui);

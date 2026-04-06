@@ -64,6 +64,9 @@ smokeTexture.colorSpace = NoColorSpace;
 const rippleTexture = loader.load('displacement/ripple.png');
 rippleTexture.colorSpace = NoColorSpace;
 
+const ripple2Texture = loader.load('displacement/ripple_2.png');
+ripple2Texture.colorSpace = NoColorSpace;
+
 const waveTexture = uniformTexture(emptyTexture);
 
 // Displacement
@@ -208,6 +211,7 @@ const materialController = gui
 const waveTextureMap = {
   empty: emptyTexture,
   ripple: rippleTexture,
+  ripple2: ripple2Texture,
   smoke: smokeTexture,
 } as const;
 

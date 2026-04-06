@@ -8,4 +8,5 @@ export const defaultSettings = {
   noiseScale: 3,
   noiseSpeed: 1,
   noiseIntensity: 0.1,
+  perPixelNormal: false,
 };

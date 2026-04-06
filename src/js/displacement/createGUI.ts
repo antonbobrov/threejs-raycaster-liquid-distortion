@@ -54,6 +54,10 @@ export function createGUI(
     .name('Noise intensity')
     .step(0.0001);
 
+  const perPixelNormalController = displacementGUI
+    .add(settings.perPixelNormal, 'value')
+    .name('Per-pixel normal');
+
   const updateGUI = () => [
     radiusController.updateDisplay(),
     amplitudeController.updateDisplay(),
@@ -64,6 +68,7 @@ export function createGUI(
     noiseScaleController.updateDisplay(),
     noiseSpeedController.updateDisplay(),
     noiseIntensityController.updateDisplay(),
+    perPixelNormalController.updateDisplay(),
   ];
 
   return {
