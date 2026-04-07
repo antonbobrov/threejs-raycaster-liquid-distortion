@@ -31,10 +31,7 @@ import { createGUI } from './createGUI';
 import { defaultSettings } from './defaults';
 import { createWaves } from './waves/createWaves';
 
-export function createDisplacement(
-  waveTexture: TextureNode<'vec4'>,
-  gui?: GUI,
-) {
+export function createDisplacement(waveTexture: TextureNode, gui?: GUI) {
   const settings = {
     radius: uniform(defaultSettings.radius),
     amplitude: uniform(defaultSettings.amplitude),

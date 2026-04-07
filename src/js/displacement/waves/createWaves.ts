@@ -5,7 +5,7 @@ import { Wave } from './Wave';
 
 const COUNT = 100;
 
-export function createWaves(speed: UniformNode<'float', number>) {
+export function createWaves(speed: UniformNode<number>) {
   const waves: Wave[] = [];
   let currentWaveIndex = 0;
 

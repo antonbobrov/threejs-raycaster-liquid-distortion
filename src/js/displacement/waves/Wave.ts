@@ -5,7 +5,7 @@ import { UniformNode } from 'three/webgpu';
 export class Wave {
   private _data = new Vector4(0, 0, 0, 0);
 
-  constructor(private _speed: UniformNode<'float', number>) {}
+  constructor(private _speed: UniformNode<number>) {}
 
   public update(coord: Vector3) {
     this._data.x = coord.x;
