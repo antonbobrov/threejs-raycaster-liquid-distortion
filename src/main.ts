@@ -19,7 +19,7 @@ import {
   MeshNormalNodeMaterial,
   MeshStandardNodeMaterial,
 } from 'three/webgpu';
-import { Cursor, vevet } from 'vevet';
+import { addEventListener, Cursor, vevet } from 'vevet';
 
 import { createDisplacement } from './js/displacement/createDisplacement';
 import { defaultSettings } from './js/displacement/defaults';
@@ -37,7 +37,6 @@ manager.scene.environmentIntensity = 1;
 
 new HDRLoader().load('env/warehouse.hdr', (texture) => {
   manager.scene.environment = texture;
-  manager.renderer.compile(manager.scene, manager.camera);
 });
 
 // Textures
@@ -156,6 +155,7 @@ function releaseFromCursor(x: number, y: number) {
 
 const cursor = new Cursor({
   lerp: 1,
+  append: false,
   onRender: () => {
     if (!settings.mouse.value) {
       return;
@@ -168,6 +168,15 @@ const cursor = new Cursor({
 
     releaseFromCursor(x, y);
   },
+});
+
+addEventListener(window, 'pointermove', (evt) => {
+  const { clientX, clientY } = evt;
+
+  const x = (clientX / vevet.width) * 2 - 1;
+  const y = -(clientY / vevet.height) * 2 + 1;
+
+  releaseFromCursor(x, y);
 });
 
 // GUI

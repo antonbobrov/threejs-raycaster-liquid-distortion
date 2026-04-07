@@ -113,6 +113,7 @@ export class Webgl {
     // Orbit controls
     this._orbits = new OrbitControls(this._camera, this._canvas);
     this._orbits.enableDamping = true;
+    this._orbits.enableRotate = !vevet.mobile;
 
     // Create scene
     this._scene = new Scene();
